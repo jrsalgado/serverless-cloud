@@ -1,6 +1,9 @@
 import { Stack, StackProps } from "aws-cdk-lib";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { Vpc, SubnetType} from "aws-cdk-lib/aws-ec2";
+import { EventBus, Rule, RuleTargetInput } from "aws-cdk-lib/aws-events";
+import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 import { Construct } from "constructs"
 import { join } from "path"
 
@@ -11,11 +14,46 @@ interface ServerlessStackProps extends StackProps{
 export class ServerlessStack extends Stack {
     constructor(scope: Construct, id: string, props: ServerlessStackProps) {
         super(scope, id, props)
+        // Create the VPC with public and private subnets and 2 AZ
+        const vpc = new Vpc(this, 'vpc', {
+            maxAzs: 2, // Set the number of Availability Zones
+            subnetConfiguration: [
+              {
+                subnetType: SubnetType.PUBLIC,
+                name: "PublicSubnet",
+              },
+              {
+                subnetType: SubnetType.PRIVATE_WITH_EGRESS,
+                name: "PrivateSubnet",
+              },
+            ],
+        })
 
-        new NodejsFunction(this, 'product-picker', {
+        const lambdaProductPicker = new NodejsFunction(this, 'product-picker', {
             runtime: Runtime.NODEJS_18_X,
             handler: 'handler',
-            entry: (join(__dirname, '../..', 'product-picker/src', 'index.ts'))
+            entry: (join(__dirname, '../..', 'product-picker/src', 'index.ts')),
+            vpc: vpc,
+            vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS }
         })
+
+        // Create an EventBridge event bus named "32ds"
+        const eventBus = new EventBus(this, "MyEventBus", {
+            eventBusName: "32ds", // Set the name of the event bus
+        });
+
+        // Define the event pattern as an EventPattern object
+        const eventPattern = {
+            "source": ["32ds.purchases"],
+            "detail-type": ["OrderPlacedEvent"],
+        };
+
+        // Create an event rule for the "OrderPlacedEvent"
+        const eventRule = new Rule(this, "OrderPlacedEventRule", {
+            eventBus,
+            eventPattern,
+            targets: [new LambdaFunction(lambdaProductPicker)]
+        });
+
     }
 }
