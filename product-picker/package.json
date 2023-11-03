@@ -1,0 +1,11 @@
+{
+  "name": "product-picker",
+  "version": "1.0.0",
+  "description": "Pick random products.",
+  "main": "index.js",
+  "author": "HeroGuest <jorge@heroguest.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.125"
+  }
+}
