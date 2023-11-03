@@ -16,7 +16,7 @@ export class CdkCicdStack extends cdk.Stack {
     })
 
 
-    const ServerlessStage = pipeline.addStage(new ServerlessStage(this, 'ServerlessStage', {
+    const serverlessStage = pipeline.addStage(new ServerlessStage(this, 'ServerlessStage', {
       stageName: 'dev',
     }))
 
