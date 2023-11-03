@@ -1,0 +1,15 @@
+P2: Construye un pipeline de CI/CD para uno de los servicios usando CodePipeline y el CDK.
+- Crear un Pipeline con CDK, inicialmente este pipeline sera creado manualmente
+    los resursos creados para la infraestructura seran creados posteriormente.
+    - Crear Pipeline code con CDK
+    - Habilitar continuous integration con github
+
+- Agregar al Pipeline, el deployment de una de las lambdas al menos, 
+    sera deployada en automatico por el pipeline mismo
+    - La arquitectura
+
+
+
+
+
+
