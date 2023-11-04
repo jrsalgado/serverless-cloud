@@ -6,6 +6,7 @@ import { EventBus, Rule, RuleTargetInput } from "aws-cdk-lib/aws-events";
 import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 import { Construct } from "constructs"
 import { join } from "path"
+import { RetentionDays } from "aws-cdk-lib/aws-logs";
 
 interface ServerlessStackProps extends StackProps{
     stageName?: string;
@@ -34,7 +35,8 @@ export class ServerlessStack extends Stack {
             handler: 'handler',
             entry: (join(__dirname, '../..', 'product-picker/src', 'index.ts')),
             vpc: vpc,
-            vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS }
+            vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
+            logRetention: RetentionDays.ONE_DAY, // Retain 1 day of logs
         })
 
         // Create an EventBridge event bus named "32ds"
