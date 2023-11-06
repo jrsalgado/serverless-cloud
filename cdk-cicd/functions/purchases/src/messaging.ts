@@ -33,5 +33,6 @@ export class EventBridgeMessageBus implements MessageBus{
         const command = new PutEventsCommand(input)
         const response = await this.client.send(command)
         console.log(JSON.stringify(response))
+        return response
     }
 }

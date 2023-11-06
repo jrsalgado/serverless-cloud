@@ -7,6 +7,8 @@ import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
 import { Construct } from "constructs"
 import { join } from "path"
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
+import { PolicyStatement, Effect } from "aws-cdk-lib/aws-iam";
+
 
 interface ServerlessStackProps extends StackProps{
     stageName?: string;
@@ -66,5 +68,12 @@ export class ServerlessStack extends Stack {
             targets: [new LambdaFunction(lambdaProductPicker)]
         });
 
+        const eventBridgePermission = new PolicyStatement({
+            actions: ["events:PutEvents"],
+            effect: Effect.ALLOW,
+            resources: [ eventBus.eventBusArn],
+        })
+
+        lambdaPurchases.addToRolePolicy(eventBridgePermission);
     }
 }

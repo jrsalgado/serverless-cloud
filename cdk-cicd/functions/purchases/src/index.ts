@@ -3,10 +3,12 @@ import { PlaceOrderCommand } from './domain';
 import { placeOrder } from './service';
 
 export const handler: Handler = async (event) => {
+    console.log(event);
     const requestBody = JSON.parse(event.body)
     console.log(requestBody)
     const command = new PlaceOrderCommand(requestBody.userId, requestBody.numberOfProducts)
-    placeOrder(command)
+    const resultEvent = placeOrder(command)
+    console.log(resultEvent)
     console.log("Order Placed Successfully.")
 
     const response = {
