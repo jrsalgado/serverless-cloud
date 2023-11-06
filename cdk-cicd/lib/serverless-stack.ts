@@ -33,16 +33,16 @@ export class ServerlessStack extends Stack {
         const lambdaPurchases = new NodejsFunction(this, 'purchases', {
             runtime: Runtime.NODEJS_18_X,
             handler: 'handler',
-            entry: (join(__dirname, '../..', 'purchases/src', 'index.ts')),
+            entry: (join(__dirname, '../functions', 'purchases/src', 'index.ts')),
             vpc: vpc,
-            vpcSubnets: { subnetType: SubnetType.PRIVATE_ISOLATED },
+            vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
             logRetention: RetentionDays.ONE_DAY, // Retain 1 day of logs,
         })
 
         const lambdaProductPicker = new NodejsFunction(this, 'product-picker', {
             runtime: Runtime.NODEJS_18_X,
             handler: 'handler',
-            entry: (join(__dirname, '../..', 'product-picker/src', 'index.ts')),
+            entry: (join(__dirname, '../functions', 'product-picker/src', 'index.ts')),
             vpc: vpc,
             vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
             logRetention: RetentionDays.ONE_DAY, // Retain 1 day of logs
