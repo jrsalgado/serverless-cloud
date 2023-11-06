@@ -14,7 +14,7 @@ export class EventBridgeMessageBus implements MessageBus{
     public client: EventBridgeClient
 
     constructor(){
-        this.client = new EventBridgeClient({"region": "us-west-1"});
+        this.client = new EventBridgeClient({"region": process.env['AWS_REGION']});
     }
 
     createInput(event: OrderPlacedEvent): PutEventsCommandInput {
